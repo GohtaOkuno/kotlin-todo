@@ -24,7 +24,11 @@
       "Bash(GRADLE_OPTS=\"\" JAVA_OPTS=\"\" ./gradlew assembleDebug)",
       "Bash(curl:*)",
       "Bash(wget:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git push:*)",
+      "Bash(gh repo edit:*)",
+      "Bash(python3:*)"
     ],
     "deny": []
   }

@@ -46,6 +46,9 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     
+    // Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    
     // Room database
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
