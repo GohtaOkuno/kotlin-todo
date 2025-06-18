@@ -28,7 +28,8 @@
       "Bash(gh repo create:*)",
       "Bash(git push:*)",
       "Bash(gh repo edit:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

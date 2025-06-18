@@ -22,7 +22,7 @@
         <activity
             android:name=".MainComposeActivity"
             android:exported="true"
-            android:theme="@style/Theme.KotlinTodo.SplashScreen">
+            android:theme="@style/Theme.KotlinTodo.SplashScreen.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

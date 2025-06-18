@@ -52,6 +52,9 @@ class MainComposeActivity : ComponentActivity() {
         
         super.onCreate(savedInstanceState)
         
+        // NoActionBarテーマに確実に切り替え
+        setTheme(R.style.Theme_KotlinTodo)
+        
         // スプラッシュスクリーンの終了アニメーション
         splashScreen.setOnExitAnimationListener { splashScreenView ->
             val slideUp = ObjectAnimator.ofFloat(
