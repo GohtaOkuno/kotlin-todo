@@ -212,8 +212,8 @@ fun TaskItem(
     val slideInOffset by animateIntAsState(
         targetValue = if (isVisible) 0 else 300,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessMedium
+            dampingRatio = Spring.DampingRatioLowBouncy,
+            stiffness = Spring.StiffnessMediumLow
         ),
         label = "slide_in"
     )
@@ -232,23 +232,20 @@ fun TaskItem(
     )
     
     // 完了時のアニメーション
-    var bounceOffset by remember { mutableStateOf(0f) }
-    val bounceAnim = remember { Animatable(0f) }
+    val scaleAnim = remember { Animatable(1f) }
     
     LaunchedEffect(task.isDone) {
         if (task.isDone) {
-            bounceAnim.animateTo(
-                targetValue = -20f,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessMedium
-                )
+            // チェック時により控えめなスケールアニメーション
+            scaleAnim.animateTo(
+                targetValue = 1.05f,
+                animationSpec = tween(150)
             )
-            bounceAnim.animateTo(
-                targetValue = 0f,
+            scaleAnim.animateTo(
+                targetValue = 1f,
                 animationSpec = spring(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessMedium
+                    stiffness = Spring.StiffnessHigh
                 )
             )
         }
@@ -260,10 +257,10 @@ fun TaskItem(
             .graphicsLayer {
                 translationX = (slideInOffset + deleteOffset).toFloat()
                 alpha = deleteAlpha
-                translationY = bounceAnim.value
+                scaleX = scaleAnim.value
+                scaleY = scaleAnim.value
             }
-            .clip(RoundedCornerShape(12.dp))
-            .clickable { onToggle() },
+            .clip(RoundedCornerShape(12.dp)),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -279,7 +276,11 @@ fun TaskItem(
             ) {
                 Checkbox(
                     checked = task.isDone,
-                    onCheckedChange = { onToggle() }
+                    onCheckedChange = { checked ->
+                        if (checked != task.isDone) {
+                            onToggle()
+                        }
+                    }
                 )
                 
                 Spacer(modifier = Modifier.width(12.dp))
