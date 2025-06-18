@@ -20,30 +20,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/textViewTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="12dp"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textViewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="?android:attr/textColorPrimary" />
-
-        <TextView
-            android:id="@+id/textViewCreatedAt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:layout_marginTop="2dp" />
-
-    </LinearLayout>
+        android:textSize="16sp"
+        android:textColor="?android:attr/textColorPrimary" />
 
     <ImageButton
         android:id="@+id/buttonDelete"

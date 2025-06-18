@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -71,6 +72,9 @@ class MainActivity : AppCompatActivity() {
             },
             onTaskDelete = { taskId ->
                 taskViewModel.deleteTask(taskId)
+            },
+            onTaskEdit = { taskId, currentTitle ->
+                showEditTaskDialog(taskId, currentTitle)
             }
         )
         
@@ -118,5 +122,26 @@ class MainActivity : AppCompatActivity() {
         taskViewModel.tasks.observe(this) { tasks ->
             taskAdapter.submitList(tasks)
         }
+    }
+    
+    private fun showEditTaskDialog(taskId: Int, currentTitle: String) {
+        val editText = EditText(this).apply {
+            setText(currentTitle)
+            selectAll()
+        }
+        
+        AlertDialog.Builder(this)
+            .setTitle("タスクを編集")
+            .setView(editText)
+            .setPositiveButton("保存") { _, _ ->
+                val newTitle = editText.text.toString()
+                if (newTitle.isNotBlank()) {
+                    taskViewModel.updateTask(taskId, newTitle)
+                }
+            }
+            .setNegativeButton("キャンセル", null)
+            .show()
+        
+        editText.requestFocus()
     }
 }
