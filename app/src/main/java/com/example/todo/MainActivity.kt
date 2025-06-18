@@ -44,6 +44,10 @@ class MainActivity : AppCompatActivity() {
         
         setContentView(R.layout.activity_main)
         
+        // ツールバーをセットアップ
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        
         setupRecyclerView()
         setupViews()
         observeViewModel()
