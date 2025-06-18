@@ -51,11 +51,11 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         
-        // WindowInsetsを処理してノッチとの重なりを防ぐ
-        val coordinatorLayout = findViewById<androidx.coordinatorlayout.widget.CoordinatorLayout>(R.id.main_coordinator)
-        ViewCompat.setOnApplyWindowInsetsListener(coordinatorLayout) { v, insets ->
+        // WindowInsetsを処理してノッチとの重なりを防ぐ - AppBarLayoutのみに適用
+        val appBarLayout = findViewById<com.google.android.material.appbar.AppBarLayout>(R.id.app_bar_layout)
+        ViewCompat.setOnApplyWindowInsetsListener(appBarLayout) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
         
