@@ -18,6 +18,13 @@
             android:exported="false"
             android:theme="@style/Theme.KotlinTodo.SplashScreen" />
         
+        <!-- Task Detail Activity -->
+        <activity
+            android:name=".ui.activity.TaskDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.KotlinTodo"
+            android:parentActivityName=".ui.activity.MainActivity" />
+        
         <!-- Compose Activity (Main Launcher) -->
         <activity
             android:name=".ui.activity.MainComposeActivity"

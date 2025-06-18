@@ -16,7 +16,9 @@ import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
 import com.example.todo.R
+import com.example.todo.data.model.Priority
 import com.example.todo.data.model.Task
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -24,7 +26,8 @@ import java.util.Locale
 class TaskAdapter(
     private val onTaskToggle: (Int) -> Unit,
     private val onTaskDelete: (Int) -> Unit,
-    private val onTaskEdit: (Int, String) -> Unit
+    private val onTaskEdit: (Int, String) -> Unit,
+    private val onTaskClick: (Int) -> Unit
 ) : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
     
     private var shouldAnimateNewItem = false
@@ -60,6 +63,7 @@ class TaskAdapter(
         private val checkBoxDone: CheckBox = itemView.findViewById(R.id.checkBoxDone)
         private val textViewTitle: TextView = itemView.findViewById(R.id.textViewTitle)
         private val textViewCreatedAt: TextView = itemView.findViewById(R.id.textViewCreatedAt)
+        private val textViewPriority: TextView = itemView.findViewById(R.id.textViewPriority)
         private val buttonDelete: ImageButton = itemView.findViewById(R.id.buttonDelete)
         
         private val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
@@ -68,6 +72,15 @@ class TaskAdapter(
             textViewTitle.text = task.title
             checkBoxDone.isChecked = task.isDone
             textViewCreatedAt.text = dateFormat.format(task.createdAt)
+            
+            // 優先度の表示設定
+            textViewPriority.text = task.priority.displayName
+            val priorityColor = when (task.priority) {
+                Priority.HIGH -> ContextCompat.getColor(itemView.context, android.R.color.holo_red_light)
+                Priority.NORMAL -> ContextCompat.getColor(itemView.context, android.R.color.holo_blue_light)
+                Priority.LOW -> ContextCompat.getColor(itemView.context, android.R.color.holo_green_light)
+            }
+            textViewPriority.background.setTint(priorityColor)
             
             // Apply strikethrough for completed tasks
             if (task.isDone) {
@@ -87,6 +100,10 @@ class TaskAdapter(
                 animateItemDelete(itemView) {
                     onTaskDelete(task.id)
                 }
+            }
+            
+            itemView.setOnClickListener {
+                onTaskClick(task.id)
             }
             
             textViewTitle.setOnClickListener {

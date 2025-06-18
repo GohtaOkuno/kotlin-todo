@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.todo.data.database.TaskDatabase
+import com.example.todo.data.model.Priority
 import com.example.todo.data.model.Task
 import com.example.todo.data.repository.TaskRepository
 import kotlinx.coroutines.launch
@@ -19,14 +20,15 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         tasks = repository.allTasks
     }
     
-    fun addTask(title: String) {
+    fun addTask(title: String, priority: Priority = Priority.NORMAL) {
         if (title.isNotBlank()) {
             viewModelScope.launch {
                 val newTask = Task(
                     id = 0, // Room will auto-generate the ID
                     title = title.trim(),
                     isDone = false,
-                    createdAt = java.util.Date()
+                    createdAt = java.util.Date(),
+                    priority = priority
                 )
                 repository.insert(newTask)
             }
@@ -59,5 +61,19 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
+    }
+    
+    fun updateTaskPriority(taskId: Int, priority: Priority) {
+        viewModelScope.launch {
+            val task = repository.getTaskById(taskId)
+            task?.let {
+                val updatedTask = it.copy(priority = priority)
+                repository.update(updatedTask)
+            }
+        }
+    }
+    
+    suspend fun getTaskById(taskId: Int): Task? {
+        return repository.getTaskById(taskId)
     }
 }
