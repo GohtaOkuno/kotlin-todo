@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(mv:*)",
+      "Bash(./gradlew:*)",
+      "Bash(export GRADLE_OPTS=\"\")",
+      "Bash(GRADLE_OPTS=\"-Xmx2048m\" ./gradlew build)",
+      "Bash(unset GRADLE_OPTS)",
+      "Bash(env)",
+      "Bash(java:*)",
+      "Bash(export JAVA_OPTS=\"\")",
+      "Bash(/Users/m2_macbookair_3911/Documents/ClaudeCode/kotlin-todo/gradlew assembleDebug)",
+      "Bash(kotlinc:*)",
+      "Bash(unset:*)",
+      "Bash(GRADLE_OPTS=\"\" ./gradlew clean assembleDebug)",
+      "Bash(pkill:*)",
+      "Bash(kill:*)",
+      "Bash(export GRADLE_OPTS=\"-Xmx2048m -Dfile.encoding=UTF-8\")",
+      "Bash(rm:*)",
+      "Bash(GRADLE_OPTS=\"\" JAVA_OPTS=\"\" ./gradlew assembleDebug)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}
