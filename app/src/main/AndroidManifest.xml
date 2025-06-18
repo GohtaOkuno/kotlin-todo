@@ -12,10 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KotlinTodo.SplashScreen"
         tools:targetApi="31">
+        <!-- Original XML-based Activity -->
         <activity
             android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.KotlinTodo.SplashScreen" />
+        
+        <!-- Compose Activity (Main Launcher) -->
+        <activity
+            android:name=".MainComposeActivity"
             android:exported="true"
-            android:theme="@style/Theme.KotlinTodo.SplashScreen">
+            android:theme="@style/Theme.KotlinTodo.SplashScreen.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

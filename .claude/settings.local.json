@@ -28,7 +28,14 @@
       "Bash(gh repo create:*)",
       "Bash(git push:*)",
       "Bash(gh repo edit:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git fetch:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

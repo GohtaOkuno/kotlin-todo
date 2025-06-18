@@ -16,4 +16,14 @@
         <item name="android:enforceStatusBarContrast">false</item>
         <!-- Customize your theme here. -->
     </style>
+    
+    <!-- Splash Screen Theme for Compose (No ActionBar) -->
+    <style name="Theme.KotlinTodo.SplashScreen.NoActionBar" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/splash_icon_background</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.KotlinTodo</item>
+        <item name="android:enforceStatusBarContrast">false</item>
+    </style>
 </resources>
