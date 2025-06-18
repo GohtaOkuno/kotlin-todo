@@ -1,4 +1,4 @@
-package com.example.todo
+package com.example.todo.ui.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.todo.data.model.Task
 import java.text.SimpleDateFormat
 import java.util.Locale
 

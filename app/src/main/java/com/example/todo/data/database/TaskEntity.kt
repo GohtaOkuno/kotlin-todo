@@ -1,9 +1,10 @@
-package com.example.todo
+package com.example.todo.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.example.todo.data.model.Task
 import java.util.Date
 
 class Converters {

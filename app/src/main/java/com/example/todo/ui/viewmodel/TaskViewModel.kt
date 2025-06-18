@@ -1,9 +1,12 @@
-package com.example.todo
+package com.example.todo.ui.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.todo.data.database.TaskDatabase
+import com.example.todo.data.model.Task
+import com.example.todo.data.repository.TaskRepository
 import kotlinx.coroutines.launch
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {

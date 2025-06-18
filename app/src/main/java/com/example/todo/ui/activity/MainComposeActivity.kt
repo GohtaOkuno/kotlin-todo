@@ -1,4 +1,4 @@
-package com.example.todo
+package com.example.todo.ui.activity
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
@@ -44,7 +44,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.todo.R
+import com.example.todo.data.model.Task
+import com.example.todo.ui.screen.TodoDetailScreen
 import com.example.todo.ui.theme.KotlinTodoTheme
+import com.example.todo.ui.viewmodel.TaskViewModel
 
 class MainComposeActivity : ComponentActivity() {
     

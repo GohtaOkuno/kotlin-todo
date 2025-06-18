@@ -1,7 +1,11 @@
-package com.example.todo
+package com.example.todo.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import com.example.todo.data.database.TaskDao
+import com.example.todo.data.database.toTask
+import com.example.todo.data.database.toTaskEntity
+import com.example.todo.data.model.Task
 
 class TaskRepository(private val taskDao: TaskDao) {
     

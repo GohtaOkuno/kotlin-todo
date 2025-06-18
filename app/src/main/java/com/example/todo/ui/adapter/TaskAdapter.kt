@@ -1,4 +1,4 @@
-package com.example.todo
+package com.example.todo.ui.adapter
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -16,6 +16,8 @@ import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.todo.R
+import com.example.todo.data.model.Task
 import java.text.SimpleDateFormat
 import java.util.Locale
 

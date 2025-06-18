@@ -37,7 +37,18 @@
       "Bash(git fetch:*)",
       "Bash(grep:*)",
       "Bash(git pull:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git stash:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(git branch:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh repo view:*)"
     ],
     "deny": []
   }
