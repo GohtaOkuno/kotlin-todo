@@ -31,7 +31,6 @@
       "Bash(python3:*)",
       "Bash(git checkout:*)",
       "Bash(git merge:*)",
-      "Bash(git checkout:*)",
       "Bash(git push:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
