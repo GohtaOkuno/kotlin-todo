@@ -25,8 +25,8 @@ private val LightColorScheme = lightColorScheme(
     primary = Blue500,
     secondary = PurpleGrey40,
     tertiary = Pink40,
-    background = LightBlue50,
-    surface = androidx.compose.ui.graphics.Color.White
+    background = White,
+    surface = White
 )
 
 @Composable
@@ -49,7 +49,7 @@ fun KotlinTodoTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = androidx.compose.ui.graphics.Color.Transparent.toArgb()
+            WindowCompat.setDecorFitsSystemWindows(window, false)
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

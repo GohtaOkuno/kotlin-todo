@@ -6,7 +6,6 @@ import android.view.View
 import android.view.animation.AnticipateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
@@ -38,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.todo.ui.theme.KotlinTodoTheme
@@ -47,7 +47,6 @@ class MainComposeActivity : ComponentActivity() {
     private val taskViewModel: TaskViewModel by viewModels()
     
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         val splashScreen = installSplashScreen()
         
         super.onCreate(savedInstanceState)
@@ -72,12 +71,7 @@ class MainComposeActivity : ComponentActivity() {
         
         setContent {
             KotlinTodoTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    TodoApp(taskViewModel)
-                }
+                TodoApp(taskViewModel)
             }
         }
     }
@@ -91,6 +85,7 @@ fun TodoApp(viewModel: TaskViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
     
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = { 
@@ -104,7 +99,8 @@ fun TodoApp(viewModel: TaskViewModel) {
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         Column(
             modifier = Modifier
