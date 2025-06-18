@@ -110,6 +110,9 @@ fun TodoApp(viewModel: TaskViewModel, navController: NavHostController) {
                     onDeleteTask = {
                         viewModel.deleteTask(task.id)
                         navController.popBackStack()
+                    },
+                    onEditTask = { newTitle ->
+                        viewModel.updateTask(task.id, newTitle)
                     }
                 )
             }

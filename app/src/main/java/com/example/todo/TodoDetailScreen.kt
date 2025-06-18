@@ -15,6 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,9 +24,12 @@ fun TodoDetailScreen(
     task: Task,
     onBackClick: () -> Unit,
     onToggleTask: () -> Unit,
-    onDeleteTask: () -> Unit
+    onDeleteTask: () -> Unit,
+    onEditTask: (String) -> Unit = {}
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
     
     Scaffold(
         topBar = {
@@ -39,6 +44,13 @@ fun TodoDetailScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = { showEditDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "編集",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                     IconButton(onClick = { showDeleteDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
@@ -188,7 +200,7 @@ fun TodoDetailScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "詳細機能は今後実装予定",
+                            text = dateFormat.format(task.createdAt),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -219,6 +231,41 @@ fun TodoDetailScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("キャンセル")
+                }
+            }
+        )
+    }
+    
+    // 編集ダイアログ
+    if (showEditDialog) {
+        var editText by remember { mutableStateOf(task.title) }
+        
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("タスクを編集") },
+            text = {
+                OutlinedTextField(
+                    value = editText,
+                    onValueChange = { editText = it },
+                    label = { Text("タスクタイトル") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (editText.isNotBlank()) {
+                            onEditTask(editText)
+                            showEditDialog = false
+                        }
+                    }
+                ) {
+                    Text("保存")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
                     Text("キャンセル")
                 }
             }
