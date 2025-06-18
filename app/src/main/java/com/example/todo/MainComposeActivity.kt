@@ -40,6 +40,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.todo.ui.theme.KotlinTodoTheme
 
 class MainComposeActivity : ComponentActivity() {
@@ -71,7 +75,8 @@ class MainComposeActivity : ComponentActivity() {
         
         setContent {
             KotlinTodoTheme {
-                TodoApp(taskViewModel)
+                val navController = rememberNavController()
+                TodoApp(taskViewModel, navController)
             }
         }
     }
@@ -79,7 +84,45 @@ class MainComposeActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TodoApp(viewModel: TaskViewModel) {
+fun TodoApp(viewModel: TaskViewModel, navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "todo_list"
+    ) {
+        composable("todo_list") {
+            TodoListScreen(
+                viewModel = viewModel,
+                onTaskClick = { taskId ->
+                    navController.navigate("todo_detail/$taskId")
+                }
+            )
+        }
+        composable("todo_detail/{taskId}") { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getString("taskId")?.toIntOrNull()
+            val tasks by viewModel.tasks.observeAsState(emptyList())
+            val task = tasks.find { it.id == taskId }
+            
+            if (task != null) {
+                TodoDetailScreen(
+                    task = task,
+                    onBackClick = { navController.popBackStack() },
+                    onToggleTask = { viewModel.toggleTaskDone(task.id) },
+                    onDeleteTask = {
+                        viewModel.deleteTask(task.id)
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TodoListScreen(
+    viewModel: TaskViewModel,
+    onTaskClick: (Int) -> Unit
+) {
     val tasks by viewModel.tasks.observeAsState(emptyList())
     var taskText by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -134,7 +177,8 @@ fun TodoApp(viewModel: TaskViewModel) {
                     TaskItem(
                         task = task,
                         onToggle = { viewModel.toggleTaskDone(task.id) },
-                        onDelete = { viewModel.deleteTask(task.id) }
+                        onDelete = { viewModel.deleteTask(task.id) },
+                        onClick = { onTaskClick(task.id) }
                     )
                 }
             }
@@ -203,7 +247,8 @@ fun TaskInputSection(
 fun TaskItem(
     task: Task,
     onToggle: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onClick: () -> Unit = {}
 ) {
     var isVisible by remember { mutableStateOf(true) }
     var isDeleting by remember { mutableStateOf(false) }
@@ -260,7 +305,8 @@ fun TaskItem(
                 scaleX = scaleAnim.value
                 scaleY = scaleAnim.value
             }
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(

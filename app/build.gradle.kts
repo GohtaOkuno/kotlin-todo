@@ -64,6 +64,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.compose.animation:animation:1.5.8")
     
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    
     // Compose Tooling (for debug)
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
