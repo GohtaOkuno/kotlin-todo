@@ -22,7 +22,8 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
                 val newTask = Task(
                     id = 0, // Room will auto-generate the ID
                     title = title.trim(),
-                    isDone = false
+                    isDone = false,
+                    createdAt = java.util.Date()
                 )
                 repository.insert(newTask)
             }
@@ -42,6 +43,18 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteTask(taskId: Int) {
         viewModelScope.launch {
             repository.delete(taskId)
+        }
+    }
+    
+    fun updateTask(taskId: Int, newTitle: String) {
+        if (newTitle.isNotBlank()) {
+            viewModelScope.launch {
+                val task = repository.getTaskById(taskId)
+                task?.let {
+                    val updatedTask = it.copy(title = newTitle.trim())
+                    repository.update(updatedTask)
+                }
+            }
         }
     }
 }

@@ -16,10 +16,13 @@ import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class TaskAdapter(
     private val onTaskToggle: (Int) -> Unit,
-    private val onTaskDelete: (Int) -> Unit
+    private val onTaskDelete: (Int) -> Unit,
+    private val onTaskEdit: (Int, String) -> Unit
 ) : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
     
     private var shouldAnimateNewItem = false
@@ -54,11 +57,15 @@ class TaskAdapter(
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val checkBoxDone: CheckBox = itemView.findViewById(R.id.checkBoxDone)
         private val textViewTitle: TextView = itemView.findViewById(R.id.textViewTitle)
+        private val textViewCreatedAt: TextView = itemView.findViewById(R.id.textViewCreatedAt)
         private val buttonDelete: ImageButton = itemView.findViewById(R.id.buttonDelete)
+        
+        private val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
 
         fun bind(task: Task) {
             textViewTitle.text = task.title
             checkBoxDone.isChecked = task.isDone
+            textViewCreatedAt.text = dateFormat.format(task.createdAt)
             
             // Apply strikethrough for completed tasks
             if (task.isDone) {
@@ -78,6 +85,10 @@ class TaskAdapter(
                 animateItemDelete(itemView) {
                     onTaskDelete(task.id)
                 }
+            }
+            
+            textViewTitle.setOnClickListener {
+                onTaskEdit(task.id, task.title)
             }
         }
     }
