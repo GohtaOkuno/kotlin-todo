@@ -45,6 +45,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.todo.R
+import com.example.todo.data.model.Priority
 import com.example.todo.data.model.Task
 import com.example.todo.ui.screen.TodoDetailScreen
 import com.example.todo.ui.theme.KotlinTodoTheme
@@ -117,6 +118,9 @@ fun TodoApp(viewModel: TaskViewModel, navController: NavHostController) {
                     },
                     onEditTask = { newTitle ->
                         viewModel.updateTask(task.id, newTitle)
+                    },
+                    onPriorityChange = { newPriority ->
+                        viewModel.updateTaskPriority(task.id, newPriority)
                     }
                 )
             }
@@ -338,15 +342,49 @@ fun TaskItem(
                 
                 Spacer(modifier = Modifier.width(12.dp))
                 
-                Text(
-                    text = task.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    textDecoration = if (task.isDone) TextDecoration.LineThrough else null,
-                    color = if (task.isDone) 
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                    else 
-                        MaterialTheme.colorScheme.onSurface
-                )
+                Column {
+                    Text(
+                        text = task.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        textDecoration = if (task.isDone) TextDecoration.LineThrough else null,
+                        color = if (task.isDone) 
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        else 
+                            MaterialTheme.colorScheme.onSurface
+                    )
+                    
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // 優先度バッジ
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = when (task.priority) {
+                                    Priority.HIGH -> MaterialTheme.colorScheme.error
+                                    Priority.NORMAL -> MaterialTheme.colorScheme.primary
+                                    Priority.LOW -> MaterialTheme.colorScheme.secondary
+                                }
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = task.priority.displayName,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        
+                        // 作成日時
+                        Text(
+                            text = java.text.SimpleDateFormat("MM/dd HH:mm", java.util.Locale.getDefault()).format(task.createdAt),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                }
             }
             
             IconButton(

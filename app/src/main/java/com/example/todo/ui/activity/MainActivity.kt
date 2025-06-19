@@ -78,6 +78,10 @@ class MainActivity : AppCompatActivity() {
             },
             onTaskEdit = { taskId, currentTitle ->
                 showEditTaskDialog(taskId, currentTitle)
+            },
+            onTaskClick = { taskId ->
+                val intent = TaskDetailActivity.newIntent(this, taskId)
+                startActivity(intent)
             }
         )
         
