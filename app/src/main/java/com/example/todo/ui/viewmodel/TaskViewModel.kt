@@ -9,6 +9,7 @@ import com.example.todo.data.model.Priority
 import com.example.todo.data.model.Task
 import com.example.todo.data.repository.TaskRepository
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: TaskRepository
@@ -75,5 +76,15 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     
     suspend fun getTaskById(taskId: Int): Task? {
         return repository.getTaskById(taskId)
+    }
+    
+    fun updateTaskDueDate(taskId: Int, dueDate: Date?) {
+        viewModelScope.launch {
+            val task = repository.getTaskById(taskId)
+            task?.let {
+                val updatedTask = it.copy(dueDate = dueDate)
+                repository.update(updatedTask)
+            }
+        }
     }
 }

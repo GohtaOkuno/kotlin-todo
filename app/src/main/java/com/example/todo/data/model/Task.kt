@@ -7,5 +7,6 @@ data class Task(
     val title: String,
     val isDone: Boolean,
     val createdAt: Date,
-    val priority: Priority = Priority.NORMAL
+    val priority: Priority = Priority.NORMAL,
+    val dueDate: Date? = null
 )

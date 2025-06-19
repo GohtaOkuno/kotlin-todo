@@ -38,7 +38,8 @@ data class TaskEntity(
     val title: String,
     val isDone: Boolean,
     val createdAt: Date = Date(),
-    val priority: Priority = Priority.NORMAL
+    val priority: Priority = Priority.NORMAL,
+    val dueDate: Date? = null
 )
 
 fun TaskEntity.toTask(): Task {
@@ -47,7 +48,8 @@ fun TaskEntity.toTask(): Task {
         title = this.title,
         isDone = this.isDone,
         createdAt = this.createdAt,
-        priority = this.priority
+        priority = this.priority,
+        dueDate = this.dueDate
     )
 }
 
@@ -57,6 +59,7 @@ fun Task.toTaskEntity(): TaskEntity {
         title = this.title,
         isDone = this.isDone,
         createdAt = this.createdAt,
-        priority = this.priority
+        priority = this.priority,
+        dueDate = this.dueDate
     )
 }
