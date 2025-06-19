@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.todo.data.model.Priority
 import com.example.todo.data.model.Task
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -26,7 +27,8 @@ fun TodoDetailScreen(
     onBackClick: () -> Unit,
     onToggleTask: () -> Unit,
     onDeleteTask: () -> Unit,
-    onEditTask: (String) -> Unit = {}
+    onEditTask: (String) -> Unit = {},
+    onPriorityChange: (Priority) -> Unit = {}
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
@@ -122,6 +124,36 @@ fun TodoDetailScreen(
                             MaterialTheme.colorScheme.onSurface
                     )
                     
+                    // 優先度表示
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "優先度:",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = when (task.priority) {
+                                    Priority.HIGH -> MaterialTheme.colorScheme.error
+                                    Priority.NORMAL -> MaterialTheme.colorScheme.primary
+                                    Priority.LOW -> MaterialTheme.colorScheme.secondary
+                                }
+                            ),
+                            shape = RoundedCornerShape(12.dp)
+                        ) {
+                            Text(
+                                text = task.priority.displayName,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    }
+                    
                     // タスクID
                     Text(
                         text = "ID: ${task.id}",
@@ -165,6 +197,62 @@ fun TodoDetailScreen(
                         Text(
                             text = if (task.isDone) "未完了にする" else "完了にする"
                         )
+                    }
+                }
+            }
+            
+            // 優先度変更セクション
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "優先度設定",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Priority.values().forEach { priority ->
+                            val isSelected = task.priority == priority
+                            Button(
+                                onClick = { if (!isSelected) onPriorityChange(priority) },
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = if (isSelected) {
+                                        when (priority) {
+                                            Priority.HIGH -> MaterialTheme.colorScheme.error
+                                            Priority.NORMAL -> MaterialTheme.colorScheme.primary
+                                            Priority.LOW -> MaterialTheme.colorScheme.secondary
+                                        }
+                                    } else {
+                                        MaterialTheme.colorScheme.outline
+                                    }
+                                ),
+                                elevation = if (isSelected) {
+                                    ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                                } else {
+                                    ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                                }
+                            ) {
+                                Text(
+                                    text = priority.displayName,
+                                    color = if (isSelected) {
+                                        MaterialTheme.colorScheme.onPrimary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
