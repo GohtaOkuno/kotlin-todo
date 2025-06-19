@@ -9,7 +9,7 @@ interface TaskDao {
     fun getAllTasks(): LiveData<List<TaskEntity>>
 
     @Insert
-    suspend fun insertTask(task: TaskEntity)
+    suspend fun insertTask(task: TaskEntity): Long
 
     @Update
     suspend fun updateTask(task: TaskEntity)
@@ -22,4 +22,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE id = :taskId")
     suspend fun getTaskById(taskId: Int): TaskEntity?
+    
+    @Query("SELECT * FROM tasks ORDER BY id ASC")
+    suspend fun getAllTasksSync(): List<TaskEntity>
 }
