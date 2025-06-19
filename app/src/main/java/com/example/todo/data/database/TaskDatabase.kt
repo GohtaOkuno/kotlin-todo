@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [TaskEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class TaskDatabase : RoomDatabase() {
@@ -30,6 +30,12 @@ abstract class TaskDatabase : RoomDatabase() {
                 database.execSQL("ALTER TABLE tasks ADD COLUMN priority TEXT NOT NULL DEFAULT 'NORMAL'")
             }
         }
+        
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE tasks ADD COLUMN dueDate INTEGER")
+            }
+        }
 
         fun getDatabase(context: Context): TaskDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -37,7 +43,7 @@ abstract class TaskDatabase : RoomDatabase() {
                     context.applicationContext,
                     TaskDatabase::class.java,
                     "task_database"
-                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
                 INSTANCE = instance
                 instance
             }

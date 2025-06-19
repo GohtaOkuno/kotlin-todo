@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,10 +34,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import java.util.Calendar
+import java.util.Date
 import androidx.core.view.WindowCompat
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -121,6 +125,9 @@ fun TodoApp(viewModel: TaskViewModel, navController: NavHostController) {
                     },
                     onPriorityChange = { newPriority ->
                         viewModel.updateTaskPriority(task.id, newPriority)
+                    },
+                    onDueDateChange = { newDueDate ->
+                        viewModel.updateTaskDueDate(task.id, newDueDate)
                     }
                 )
             }
@@ -383,6 +390,39 @@ fun TaskItem(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
+                    }
+                    
+                    // 締切日表示
+                    task.dueDate?.let { dueDate ->
+                        val now = Date()
+                        val calendar = Calendar.getInstance()
+                        calendar.time = now
+                        calendar.add(Calendar.DAY_OF_YEAR, 3)
+                        val threeDaysLater = calendar.time
+                        
+                        val (dueDateText, dueDateColor) = when {
+                            dueDate.before(now) -> "期限切れ: ${java.text.SimpleDateFormat("MM/dd", java.util.Locale.getDefault()).format(dueDate)}" to MaterialTheme.colorScheme.error
+                            dueDate.before(threeDaysLater) -> "締切: ${java.text.SimpleDateFormat("MM/dd", java.util.Locale.getDefault()).format(dueDate)}" to Color(0xFFFF9800)
+                            else -> "締切: ${java.text.SimpleDateFormat("MM/dd", java.util.Locale.getDefault()).format(dueDate)}" to MaterialTheme.colorScheme.outline
+                        }
+                        
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "締切日",
+                                tint = dueDateColor,
+                                modifier = Modifier.size(12.dp)
+                            )
+                            Text(
+                                text = dueDateText,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = dueDateColor,
+                                fontWeight = if (dueDate.before(now)) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
                     }
                 }
             }

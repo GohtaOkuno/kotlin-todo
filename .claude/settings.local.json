@@ -50,7 +50,8 @@
       "Bash(gh pr list:*)",
       "Bash(gh repo view:*)",
       "Bash(git remote:*)",
-      "Bash(git gc:*)"
+      "Bash(git gc:*)",
+      "Bash(gh issue view:*)"
     ],
     "deny": []
   }

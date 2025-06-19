@@ -21,6 +21,8 @@ import com.example.todo.R
 import com.example.todo.data.model.Priority
 import com.example.todo.data.model.Task
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class TaskAdapter(
@@ -64,9 +66,11 @@ class TaskAdapter(
         private val textViewTitle: TextView = itemView.findViewById(R.id.textViewTitle)
         private val textViewCreatedAt: TextView = itemView.findViewById(R.id.textViewCreatedAt)
         private val textViewPriority: TextView = itemView.findViewById(R.id.textViewPriority)
+        private val textViewDueDate: TextView = itemView.findViewById(R.id.textViewDueDate)
         private val buttonDelete: ImageButton = itemView.findViewById(R.id.buttonDelete)
         
         private val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
+        private val dueDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
 
         fun bind(task: Task) {
             textViewTitle.text = task.title
@@ -81,6 +85,9 @@ class TaskAdapter(
                 Priority.LOW -> ContextCompat.getColor(itemView.context, android.R.color.holo_green_light)
             }
             textViewPriority.background.setTint(priorityColor)
+            
+            // 締切日の表示設定
+            setupDueDateDisplay(task)
             
             // Apply strikethrough for completed tasks
             if (task.isDone) {
@@ -108,6 +115,39 @@ class TaskAdapter(
             
             textViewTitle.setOnClickListener {
                 onTaskEdit(task.id, task.title)
+            }
+        }
+        
+        private fun setupDueDateDisplay(task: Task) {
+            task.dueDate?.let { dueDate ->
+                textViewDueDate.visibility = View.VISIBLE
+                val dueDateText = "締切: ${dueDateFormat.format(dueDate)}"
+                textViewDueDate.text = dueDateText
+                
+                // 期限の状態に応じて色を変更
+                val now = Date()
+                val calendar = Calendar.getInstance()
+                calendar.time = now
+                calendar.add(Calendar.DAY_OF_YEAR, 3) // 3日後
+                val threeDaysLater = calendar.time
+                
+                when {
+                    dueDate.before(now) -> {
+                        // 期限切れ - 赤色
+                        textViewDueDate.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.holo_red_dark))
+                        textViewDueDate.text = "期限切れ: ${dueDateFormat.format(dueDate)}"
+                    }
+                    dueDate.before(threeDaysLater) -> {
+                        // 期限が近い（3日以内） - オレンジ色
+                        textViewDueDate.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.holo_orange_dark))
+                    }
+                    else -> {
+                        // 通常 - グレー色
+                        textViewDueDate.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.darker_gray))
+                    }
+                }
+            } ?: run {
+                textViewDueDate.visibility = View.GONE
             }
         }
     }
