@@ -173,4 +173,191 @@ class TaskRepositoryTest {
         assertEquals(task.isDone, taskEntity.isDone)
         assertEquals(task.createdAt, taskEntity.createdAt)
     }
+
+    @Test
+    fun `insert should preserve dueDate when converting Task to TaskEntity`() = runBlocking {
+        val dueDate = Date()
+        val task = Task(
+            id = 0,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            priority = Priority.HIGH,
+            dueDate = dueDate
+        )
+        
+        repository.insert(task)
+        
+        coVerify {
+            mockTaskDao.insertTask(match { entity ->
+                entity.title == task.title &&
+                entity.isDone == task.isDone &&
+                entity.priority == task.priority &&
+                entity.dueDate == task.dueDate
+            })
+        }
+    }
+
+    @Test
+    fun `insert should handle null dueDate when converting Task to TaskEntity`() = runBlocking {
+        val task = Task(
+            id = 0,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            priority = Priority.HIGH,
+            dueDate = null
+        )
+        
+        repository.insert(task)
+        
+        coVerify {
+            mockTaskDao.insertTask(match { entity ->
+                entity.title == task.title &&
+                entity.isDone == task.isDone &&
+                entity.priority == task.priority &&
+                entity.dueDate == null
+            })
+        }
+    }
+
+    @Test
+    fun `update should preserve dueDate when converting Task to TaskEntity`() = runBlocking {
+        val dueDate = Date()
+        val task = Task(
+            id = 1,
+            title = "Updated Task",
+            isDone = true,
+            createdAt = Date(),
+            priority = Priority.LOW,
+            dueDate = dueDate
+        )
+        
+        repository.update(task)
+        
+        coVerify {
+            mockTaskDao.updateTask(match { entity ->
+                entity.id == task.id &&
+                entity.title == task.title &&
+                entity.isDone == task.isDone &&
+                entity.priority == task.priority &&
+                entity.dueDate == task.dueDate
+            })
+        }
+    }
+
+    @Test
+    fun `update should handle null dueDate when converting Task to TaskEntity`() = runBlocking {
+        val task = Task(
+            id = 1,
+            title = "Updated Task",
+            isDone = true,
+            createdAt = Date(),
+            priority = Priority.LOW,
+            dueDate = null
+        )
+        
+        repository.update(task)
+        
+        coVerify {
+            mockTaskDao.updateTask(match { entity ->
+                entity.id == task.id &&
+                entity.title == task.title &&
+                entity.isDone == task.isDone &&
+                entity.priority == task.priority &&
+                entity.dueDate == null
+            })
+        }
+    }
+
+    @Test
+    fun `getTaskById should return converted Task with dueDate when entity exists`() = runBlocking {
+        val dueDate = Date()
+        val taskEntity = TaskEntity(
+            id = 1,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            priority = Priority.HIGH,
+            dueDate = dueDate
+        )
+        
+        coEvery { mockTaskDao.getTaskById(1) } returns taskEntity
+        
+        val result = repository.getTaskById(1)
+        
+        assertNotNull(result)
+        assertEquals(taskEntity.id, result!!.id)
+        assertEquals(taskEntity.title, result.title)
+        assertEquals(taskEntity.isDone, result.isDone)
+        assertEquals(taskEntity.priority, result.priority)
+        assertEquals(taskEntity.dueDate, result.dueDate)
+    }
+
+    @Test
+    fun `getTaskById should return converted Task with null dueDate when entity has null dueDate`() = runBlocking {
+        val taskEntity = TaskEntity(
+            id = 1,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            priority = Priority.HIGH,
+            dueDate = null
+        )
+        
+        coEvery { mockTaskDao.getTaskById(1) } returns taskEntity
+        
+        val result = repository.getTaskById(1)
+        
+        assertNotNull(result)
+        assertEquals(taskEntity.id, result!!.id)
+        assertEquals(taskEntity.title, result.title)
+        assertEquals(taskEntity.isDone, result.isDone)
+        assertEquals(taskEntity.priority, result.priority)
+        assertNull(result.dueDate)
+    }
+
+    @Test
+    fun `TaskEntity to Task conversion preserves dueDate`() {
+        val dueDate = Date()
+        val taskEntity = TaskEntity(
+            id = 1,
+            title = "Test Task",
+            isDone = true,
+            createdAt = Date(),
+            priority = Priority.LOW,
+            dueDate = dueDate
+        )
+        
+        val task = taskEntity.toTask()
+        
+        assertEquals(taskEntity.priority, task.priority)
+        assertEquals(taskEntity.id, task.id)
+        assertEquals(taskEntity.title, task.title)
+        assertEquals(taskEntity.isDone, task.isDone)
+        assertEquals(taskEntity.createdAt, task.createdAt)
+        assertEquals(taskEntity.dueDate, task.dueDate)
+    }
+
+    @Test
+    fun `Task to TaskEntity conversion preserves dueDate`() {
+        val dueDate = Date()
+        val task = Task(
+            id = 1,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            priority = Priority.HIGH,
+            dueDate = dueDate
+        )
+        
+        val taskEntity = task.toTaskEntity()
+        
+        assertEquals(task.priority, taskEntity.priority)
+        assertEquals(task.id, taskEntity.id)
+        assertEquals(task.title, taskEntity.title)
+        assertEquals(task.isDone, taskEntity.isDone)
+        assertEquals(task.createdAt, taskEntity.createdAt)
+        assertEquals(task.dueDate, taskEntity.dueDate)
+    }
 }

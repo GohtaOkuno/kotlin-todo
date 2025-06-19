@@ -75,4 +75,88 @@ class TaskTest {
         assertEquals(task1, task2)
         assertNotEquals(task1, task3)
     }
+
+    @Test
+    fun `Task should have default dueDate as null`() {
+        val task = Task(
+            id = 1,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date()
+        )
+        assertNull(task.dueDate)
+    }
+
+    @Test
+    fun `Task should accept custom dueDate`() {
+        val dueDate = Date()
+        val task = Task(
+            id = 1,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            dueDate = dueDate
+        )
+        assertEquals(dueDate, task.dueDate)
+    }
+
+    @Test
+    fun `Task copy should preserve dueDate`() {
+        val dueDate = Date()
+        val originalTask = Task(
+            id = 1,
+            title = "Original Task",
+            isDone = false,
+            createdAt = Date(),
+            dueDate = dueDate
+        )
+        
+        val copiedTask = originalTask.copy(title = "Updated Task")
+        assertEquals(dueDate, copiedTask.dueDate)
+        assertEquals("Updated Task", copiedTask.title)
+    }
+
+    @Test
+    fun `Task copy with dueDate change should work correctly`() {
+        val originalDueDate = Date()
+        val newDueDate = Date(originalDueDate.time + 86400000) // +1 day
+        
+        val originalTask = Task(
+            id = 1,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            dueDate = originalDueDate
+        )
+        
+        val updatedTask = originalTask.copy(dueDate = newDueDate)
+        assertEquals(newDueDate, updatedTask.dueDate)
+        assertEquals(originalTask.title, updatedTask.title)
+    }
+
+    @Test
+    fun `Task copy can set dueDate to null`() {
+        val originalTask = Task(
+            id = 1,
+            title = "Test Task",
+            isDone = false,
+            createdAt = Date(),
+            dueDate = Date()
+        )
+        
+        val updatedTask = originalTask.copy(dueDate = null)
+        assertNull(updatedTask.dueDate)
+    }
+
+    @Test
+    fun `Task equality should include dueDate`() {
+        val date = Date()
+        val dueDate = Date()
+        val task1 = Task(1, "Test", false, date, Priority.NORMAL, dueDate)
+        val task2 = Task(1, "Test", false, date, Priority.NORMAL, dueDate)
+        val task3 = Task(1, "Test", false, date, Priority.NORMAL, null)
+        
+        assertEquals(task1, task2)
+        assertNotEquals(task1, task3)
+    }
 }
