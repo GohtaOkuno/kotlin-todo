@@ -1,16 +1,20 @@
 package com.example.todo.ui.screen
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -18,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.example.todo.data.model.Priority
 import com.example.todo.data.model.Task
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,11 +34,15 @@ fun TodoDetailScreen(
     onToggleTask: () -> Unit,
     onDeleteTask: () -> Unit,
     onEditTask: (String) -> Unit = {},
-    onPriorityChange: (Priority) -> Unit = {}
+    onPriorityChange: (Priority) -> Unit = {},
+    onDueDateChange: (Date?) -> Unit = {}
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showEditDialog by remember { mutableStateOf(false) }
+    var showDueDatePicker by remember { mutableStateOf(false) }
     val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault())
+    val dueDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+    val context = LocalContext.current
     
     Scaffold(
         topBar = {
@@ -154,6 +164,38 @@ fun TodoDetailScreen(
                         }
                     }
                     
+                    // 締切日表示
+                    task.dueDate?.let { dueDate ->
+                        val now = Date()
+                        val calendar = Calendar.getInstance()
+                        calendar.time = now
+                        calendar.add(Calendar.DAY_OF_YEAR, 3)
+                        val threeDaysLater = calendar.time
+                        
+                        val (dueDateText, dueDateColor) = when {
+                            dueDate.before(now) -> "期限切れ: ${dueDateFormat.format(dueDate)}" to MaterialTheme.colorScheme.error
+                            dueDate.before(threeDaysLater) -> "締切: ${dueDateFormat.format(dueDate)}" to Color(0xFFFF9800) // Orange
+                            else -> "締切: ${dueDateFormat.format(dueDate)}" to MaterialTheme.colorScheme.outline
+                        }
+                        
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "締切日",
+                                tint = dueDateColor
+                            )
+                            Text(
+                                text = dueDateText,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = dueDateColor,
+                                fontWeight = if (dueDate.before(now)) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
+                    
                     // タスクID
                     Text(
                         text = "ID: ${task.id}",
@@ -257,6 +299,57 @@ fun TodoDetailScreen(
                 }
             }
             
+            // 締切日設定セクション
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "締切日設定",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium
+                    )
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = { showDueDatePicker = true },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "日付選択"
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = task.dueDate?.let { dueDateFormat.format(it) } ?: "日付を選択"
+                            )
+                        }
+                        
+                        if (task.dueDate != null) {
+                            Button(
+                                onClick = { onDueDateChange(null) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.outline
+                                )
+                            ) {
+                                Text("クリア")
+                            }
+                        }
+                    }
+                }
+            }
+            
             Spacer(modifier = Modifier.weight(1f))
             
             // タスク詳細情報
@@ -293,6 +386,24 @@ fun TodoDetailScreen(
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+                    
+                    task.dueDate?.let { dueDate ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "締切日時:",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                text = dueDateFormat.format(dueDate),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
             }
@@ -359,5 +470,27 @@ fun TodoDetailScreen(
                 }
             }
         )
+    }
+    
+    // 日付選択ダイアログ
+    if (showDueDatePicker) {
+        val calendar = Calendar.getInstance()
+        task.dueDate?.let {
+            calendar.time = it
+        }
+        
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val newCalendar = Calendar.getInstance()
+                newCalendar.set(year, month, dayOfMonth)
+                onDueDateChange(newCalendar.time)
+                showDueDatePicker = false
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+        showDueDatePicker = false
     }
 }
