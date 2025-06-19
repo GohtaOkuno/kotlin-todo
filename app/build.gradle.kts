@@ -86,7 +86,6 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.8")
     
     // Compose UI tests
-    testImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     
     // Android tests
